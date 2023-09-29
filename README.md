@@ -1,22 +1,12 @@
-# Magenerds_Ldap
+# LDAP
 [![Latest Stable Version](https://img.shields.io/packagist/v/magenerds/ldap.svg?style=flat-square)](https://packagist.org/packages/magenerds/ldap)
 [![License](https://img.shields.io/packagist/l/magenerds/ldap.svg?style=flat-square)](https://packagist.org/packages/magenerds/ldap)
 
 ## Installation through Composer
-Add `"magenerds/ldap": "~2.0"` to the require block in your composer.json and then run `composer install`.
-
-```json
-{
-	"require": {
-		"magenerds/ldap": "~2.0"
-	}
-}
-```
-
-Alternatively, you can simply run the following from the command line:
+Add `"webcode/module-ldap"` to the require block in your composer.json and then run `composer install`.
 
 ```sh
-composer require magenerds/ldap "~2.0"
+composer require webcode/module-ldap "~2.0"
 ```
 
 ## Configuration
@@ -93,6 +83,6 @@ Example for memberOf
 
 ## Licence
 
-magenerds/ldap is distributed under the terms of the [OSL-3.0](https://github.com/magenerds/ldap/blob/master/LICENSE.md)
+webcode/module-ldap is distributed under the terms of the [OSL-3.0](https://github.com/magenerds/ldap/blob/master/LICENSE.md)
 
  

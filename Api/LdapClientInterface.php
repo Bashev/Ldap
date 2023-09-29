@@ -15,9 +15,9 @@
  * @link       https://github.com/Magenerds/Ldap
  * @author     Julian Schlarb <j.schlarb@techdivision.com>
  */
-namespace Magenerds\Ldap\Api;
+namespace Webcode\Ldap\Api;
 
-use Zend_Ldap_Collection;
+use Laminas\Ldap\Collection;
 
 /**
  * Interface LdapClientInterface
@@ -27,7 +27,7 @@ use Zend_Ldap_Collection;
 interface LdapClientInterface
 {
     /**
-     * @return Zend_Ldap_Collection
+     * @return Collection
      */
     function bind();
 
@@ -43,7 +43,7 @@ interface LdapClientInterface
      *
      * @param string $username
      *
-     * @return Zend_Ldap_Collection
+     * @return Collection
      */
     function getUserByUsername($username);
 }

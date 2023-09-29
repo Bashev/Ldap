@@ -8,14 +8,12 @@
  */
 
 /**
- * @category   Magenerds
- * @package    Magenerds_Ldap
  * @copyright  Copyright (c) 2017 TechDivision GmbH (http://www.techdivision.com)
  * @link       http://www.techdivision.com/
  * @link       https://github.com/Magenerds/Ldap
  * @author     Julian Schlarb <j.schlarb@techdivision.com>
  */
-namespace Magenerds\Ldap\Model\Ldap;
+namespace Webcode\Ldap\Model\Ldap;
 
 use Magento\User\Model\User;
 
@@ -87,7 +85,8 @@ class UserMapper
      */
     private function getFirstAttribute($ldapAttributes, $name)
     {
-        return isset($ldapAttributes[$name]) ? $ldapAttributes[$name][0] : '';
+        return isset($ldapAttributes[$name]) ? $ldapAttributes[$name][0] :
+            $ldapAttributes[$this->configuration->getAttributeNameUsername()][0];
     }
 
     /**

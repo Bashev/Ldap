@@ -15,14 +15,12 @@
  * @link       https://github.com/Magenerds/Ldap
  * @author     Julian Schlarb <j.schlarb@techdivision.com>
  */
-namespace Magenerds\Ldap\Model\Ldap;
+namespace Webcode\Ldap\Model\Ldap;
 
 use Magento\Framework\Exception\LocalizedException;
 
 /**
  * Class PasswordValidator
- *
- * @package Magenerds\Ldap\Model\Ldap
  */
 class PasswordValidator
 {
@@ -51,11 +49,11 @@ class PasswordValidator
     {
         // empty password
         if (empty($hash)) {
-            return $this->configuration->getAllowEmptyPassword() === '1' && $password === $hash;
+            return $this->configuration->getAllowEmptyPassword() === true && $password === $hash;
         }
 
         // plaintext password
-        if ($hash{0} !== '{') {
+        if ($hash[0] !== '{') {
             return $password === $hash;
         }
 

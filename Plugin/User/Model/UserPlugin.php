@@ -8,22 +8,18 @@
  */
 
 /**
- * @category   Magenerds
- * @package    Magenerds_Ldap
  * @copyright  Copyright (c) 2017 TechDivision GmbH (http://www.techdivision.com)
  * @link       http://www.techdivision.com/
  * @link       https://github.com/Magenerds/Ldap
  * @author     Julian Schlarb <j.schlarb@techdivision.com>
  */
-namespace Magenerds\Ldap\Plugin\User\Model;
+namespace Webcode\Ldap\Plugin\User\Model;
 
 use Closure;
 use Magento\User\Model\User;
 
 /**
  * Class UserPlugin
- *
- * @package Magenerds\Ldap\Plugin\User\Model
  */
 final class UserPlugin
 {
@@ -38,8 +34,12 @@ final class UserPlugin
     {
         // only validate non ldap users
         /** @noinspection PhpUndefinedMethodInspection */
-        if (strlen(trim($subject->getLdapDn())) === 0) {
+        if ($subject->getLdapDn() && strlen(trim($subject->getLdapDn())) === 0) {
             return $proceed();
+        }
+
+        if ($subject->isObjectNew()) {
+            $subject->setPassword(uniqid());
         }
 
         return $subject;

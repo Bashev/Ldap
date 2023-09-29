@@ -15,7 +15,7 @@
  * @link       https://github.com/Magenerds/Ldap
  * @author     Julian Schlarb <j.schlarb@techdivision.com>
  */
-namespace Magenerds\Ldap\Setup;
+namespace Webcode\Ldap\Setup;
 
 use Magento\Framework\DB\Ddl\Table;
 use Magento\Framework\Exception\StateException;
@@ -25,8 +25,6 @@ use Magento\Framework\Setup\SchemaSetupInterface;
 
 /**
  * Class InstallSchema
- *
- * @package Magenerds\Ldap\Setup
  */
 class InstallSchema implements InstallSchemaInterface
 {

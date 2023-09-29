@@ -8,24 +8,20 @@
  */
 
 /**
- * @category   Magenerds
- * @package    Magenerds_Ldap
  * @copyright  Copyright (c) 2017 TechDivision GmbH (http://www.techdivision.com)
  * @link       http://www.techdivision.com/
  * @link       https://github.com/Magenerds/Ldap
  * @author     Julian Schlarb <j.schlarb@techdivision.com>
  */
-namespace Magenerds\Ldap\Test\Model\Ldap;
+namespace Webcode\Ldap\Test\Model\Ldap;
 
-use Magenerds\Ldap\Model\Ldap\Configuration;
-use Magenerds\Ldap\Model\Ldap\PasswordValidator;
+use Webcode\Ldap\Model\Ldap\Configuration;
+use Webcode\Ldap\Model\Ldap\PasswordValidator;
 
 /**
  * Class PasswordCheckerTest
- *
- * @package Magenerds\Ldap\Test\Model
  */
-class PasswordCheckerTest extends \PHPUnit_Framework_TestCase
+class PasswordValidatorTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Holds a mock of Configuration

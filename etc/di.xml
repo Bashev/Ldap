@@ -15,19 +15,15 @@
  -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    <preference for="Magenerds\Ldap\Api\LdapClientInterface" type="Magenerds\Ldap\Model\Ldap\LdapClient"/>
+    <preference for="Webcode\Ldap\Api\LdapClientInterface" type="Webcode\Ldap\Model\Ldap\LdapClient"/>
 
     <type name="Magento\User\Model\User">
-        <plugin name="Magenerds_Ldap::UserPlugin"
-                type="Magenerds\Ldap\Plugin\User\Model\UserPlugin" sortOrder="100"/>
+        <plugin name="Webcode_Ldap::UserPlugin" type="Webcode\Ldap\Plugin\User\Model\UserPlugin" sortOrder="100"/>
     </type>
 
     <type name="Magento\Backend\Model\Auth\Credential\StorageInterface">
-        <plugin name="Magenerds_Ldap::StoragePlugin"
-                type="Magenerds\Ldap\Plugin\Backend\Model\Auth\Credential\StoragePlugin" sortOrder="100"/>
+        <plugin name="Webcode_Ldap::StoragePlugin" type="Webcode\Ldap\Plugin\Backend\Model\Auth\Credential\StoragePlugin" sortOrder="100"/>
     </type>
 
-    <preference for="Magento\User\Block\User\Edit\Tab\Main"
-                type="Magenerds\Ldap\Block\System\Account\Edit\Main"/>
-
+    <preference for="Magento\User\Block\User\Edit\Tab\Main" type="Webcode\Ldap\Block\System\Account\Edit\Main"/>
 </config>

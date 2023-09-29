@@ -15,16 +15,11 @@
  * @link       https://github.com/Magenerds/Ldap
  * @author     Julian Schlarb <j.schlarb@techdivision.com>
  */
-namespace Magenerds\Ldap\Model\Ldap;
+namespace Webcode\Ldap\Model\Ldap;
 
-use Magenerds\Ldap\Api\ConfigInterface;
+use Webcode\Ldap\Api\ConfigInterface;
 use Magento\Framework\App\DeploymentConfig;
 
-/**
- * Class Configuration
- *
- * @package Magenerds\Ldap\Model\Ldap
- */
 class Configuration implements ConfigInterface
 {
     /**

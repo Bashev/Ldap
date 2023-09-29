@@ -7,13 +7,11 @@
  * http://opensource.org/licenses/osl-3.0.php
  */
 
-namespace Magenerds\Ldap\Block\System\Account\Edit;
+namespace Webcode\Ldap\Block\System\Account\Edit;
 
 use Magento\Framework\Data\Form\Element\AbstractElement;
 
 /**
- * @category   Magenerds
- * @package    Magenerds_Ldap
  * @copyright  Copyright (c) 2017 TechDivision GmbH (http://www.techdivision.com)
  * @link       http://www.techdivision.com/
  * @link       https://github.com/Magenerds/Ldap
@@ -21,28 +19,20 @@ use Magento\Framework\Data\Form\Element\AbstractElement;
  */
 class Main extends \Magento\User\Block\User\Edit\Tab\Main
 {
-
-    /**
-     * {@inheritdoc}
-     */
     protected function _prepareForm()
     {
         $result = parent::_prepareForm();
-
-        /** @var $model \Magento\User\Model\User */
         $model = $this->_coreRegistry->registry('permissions_user');
 
         $isLdapUser = $model->getLdapDn();
 
-        if(strlen(trim($isLdapUser)) === 0) {
+        if (strlen(trim($isLdapUser)) === 0) {
             return $result;
         }
 
         $fieldsToDisable = ['username', 'firstname', 'lastname', 'email', 'password', 'password_confirmation'];
 
-        /** @var AbstractElement[] $field */
         $fields = $result->getForm()->getElements();
-
         foreach ($fields as $field) {
             /** @var AbstractElement $element */
             foreach ($field->getElements() as $element) {

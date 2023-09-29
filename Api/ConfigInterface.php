@@ -7,12 +7,9 @@
  * http://opensource.org/licenses/osl-3.0.php
  */
 
-namespace Magenerds\Ldap\Api;
+namespace Webcode\Ldap\Api;
 
 /**
- * @category   Magenerds
- * @package    Magenerds_Ldap
- * @subpackage Model
  * @copyright  Copyright (c) 2017 TechDivision GmbH (http://www.techdivision.com)
  * @link       http://www.techdivision.com/
  * @author     Julian Schlarb <j.schlarb@techdivision.com>
@@ -59,14 +56,14 @@ interface ConfigInterface
      *
      * @return string
      */
-    function getUserFilter();
+    public function getUserFilter();
 
     /**
      * Returns true if it's allowed to cache the users password otherwise false
      *
      * @return boolean
      */
-    function getCachePassword();
+    public function getCachePassword();
 
     /**
      * Returns the attribute key in LDAP defining the user’s username.

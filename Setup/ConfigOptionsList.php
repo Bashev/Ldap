@@ -8,16 +8,14 @@
  */
 
 /**
- * @package    Magenerds_Smtp
- * @subpackage Setup
  * @copyright  Copyright (c) 2017 TechDivision GmbH (http://www.techdivision.com)
  * @version    ${release.version}
  * @link       http://www.techdivision.com/
  * @author     Julian Schlarb <j.schlarb@techdivision.com>
  */
-namespace Magenerds\Ldap\Setup;
+namespace Webcode\Ldap\Setup;
 
-use Magenerds\Ldap\Api\ConfigInterface;
+use Webcode\Ldap\Api\ConfigInterface;
 use Magento\Authorization\Model\Role;
 use Magento\Framework\App\DeploymentConfig;
 use Magento\Framework\Config\Data\ConfigData;
@@ -31,7 +29,6 @@ use Magento\Framework\Setup\Option\TextConfigOption;
 
 /**
  * Class ConfigOptionsList
- * @category   Magenerds
  */
 class ConfigOptionsList implements ConfigOptionsListInterface
 {

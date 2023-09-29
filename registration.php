@@ -18,6 +18,6 @@
 
 \Magento\Framework\Component\ComponentRegistrar::register(
     \Magento\Framework\Component\ComponentRegistrar::MODULE,
-    'Magenerds_Ldap',
+    'Webcode_Ldap',
     __DIR__
 );

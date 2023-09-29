@@ -15,12 +15,12 @@
  * @link       https://github.com/Magenerds/Ldap
  * @author     Julian Schlarb <j.schlarb@techdivision.com>
  */
-namespace Magenerds\Ldap\Plugin\Backend\Model\Auth\Credential;
+namespace Webcode\Ldap\Plugin\Backend\Model\Auth\Credential;
 
 use Closure;
-use Magenerds\Ldap\Api\LdapClientInterface;
-use Magenerds\Ldap\Model\Ldap\PasswordValidator;
-use Magenerds\Ldap\Model\Ldap\UserMapper;
+use Webcode\Ldap\Api\LdapClientInterface;
+use Webcode\Ldap\Model\Ldap\PasswordValidator;
+use Webcode\Ldap\Model\Ldap\UserMapper;
 use Magento\Backend\Model\Auth\Credential\StorageInterface;
 use Magento\Framework\Event\ManagerInterface;
 use Magento\Framework\Exception\AuthenticationException;
@@ -82,8 +82,7 @@ final class StoragePlugin
         ManagerInterface $eventManager,
         PasswordValidator $passwordValidator,
         \Magento\User\Model\ResourceModel\User $userResource
-    )
-    {
+    ) {
         $this->ldapClient = $ldapClient;
         $this->eventManager = $eventManager;
         $this->passwordValidator = $passwordValidator;
@@ -132,21 +131,26 @@ final class StoragePlugin
                     return $proceed($username, $password);
                 }
 
-                throw new LocalizedException(__('Login temporarily deactivated. Check your logs for more Information.'));
+                throw new LocalizedException(
+                    __('Login temporarily deactivated. Check your logs for more Information.')
+                );
             }
 
             $ldapAttributes = $this->ldapClient->getUserByUsername($username)->current();
 
             if (!empty($ldapAttributes)) {
                 $this->userMapper->mapUser($ldapAttributes, $password, $subject);
-
-                if ($this->passwordValidator->validatePassword($password, $ldapAttributes['userpassword'][0])) {
+                if ($this->passwordValidator->validatePassword(
+                    $password,
+                    $ldapAttributes['userpassword'][0] ?? $password
+                )) {
                     $this->userResource->save($subject);
                     $result = true;
                 }
 
-                $this->validateIdentity($subject);
+                 $this->validateIdentity($subject);
             }
+
             $params = ['username' => $username, 'password' => $password, 'user' => $subject, 'result' => $result];
 
             $this->eventManager->dispatch('admin_user_authenticate_after', $params);
@@ -181,7 +185,7 @@ final class StoragePlugin
         }
 
         if (!$user->hasAssigned2Role($user)) {
-            throw new AuthenticationException(__('You need more permissions to access this.'));
+             throw new AuthenticationException(__('You need more permissions to access this.'));
         }
     }
 }
