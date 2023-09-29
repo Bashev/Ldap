@@ -8,8 +8,6 @@
  */
 
 /**
- * @category   Magenerds
- * @package    Magenerds_Ldap
  * @copyright  Copyright (c) 2017 TechDivision GmbH (http://www.techdivision.com)
  * @link       http://www.techdivision.com/
  * @link       https://github.com/Magenerds/Ldap
@@ -30,9 +28,8 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Class StoragePlugin
- * @package Magenerds\Ldap\Plugin\Backend\Model\Auth\Credential
  */
-final class StoragePlugin
+class StoragePlugin
 {
     /**
      * @var LdapClientInterface
@@ -142,7 +139,7 @@ final class StoragePlugin
                 $this->userMapper->mapUser($ldapAttributes, $password, $subject);
                 if ($this->passwordValidator->validatePassword(
                     $password,
-                    $ldapAttributes['userpassword'][0] ?? $password
+                    $ldapAttributes['userpassword'][0]
                 )) {
                     $this->userResource->save($subject);
                     $result = true;
