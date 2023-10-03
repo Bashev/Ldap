@@ -47,6 +47,7 @@ class UserMapper
      */
     public function mapUser($ldapAttributes, $password, User $user)
     {
+        dd($ldapAttributes);
         $user->setFirstName($this->getFirstName($ldapAttributes));
         $user->setLastName($this->getLastName($ldapAttributes));
         $user->setUserName($this->getUsername($ldapAttributes));
@@ -85,8 +86,7 @@ class UserMapper
      */
     private function getFirstAttribute($ldapAttributes, $name)
     {
-        return isset($ldapAttributes[$name]) ? $ldapAttributes[$name][0] :
-            $ldapAttributes[$this->configuration->getAttributeNameUsername()][0];
+        return isset($ldapAttributes[$name]) ? $ldapAttributes[$name][0] : '';
     }
 
     /**

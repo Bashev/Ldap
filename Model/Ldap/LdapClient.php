@@ -18,31 +18,39 @@
 namespace Webcode\Ldap\Model\Ldap;
 
 use Exception;
-use Webcode\Ldap\Api\LdapClientInterface;
+use Laminas\Ldap\Collection;
+use Laminas\Ldap\Exception\LdapException;
+use Laminas\Ldap\Ldap;
 use Magento\Framework\Exception\LocalizedException;
 use Psr\Log\LoggerInterface;
-use Laminas\Ldap\Ldap;
-use Laminas\Ldap\Exception\LdapException;
+use Webcode\Ldap\Api\LdapClientInterface;
 
-/**
- * Class LdapClient
- */
 class LdapClient implements LdapClientInterface
 {
     /**
      * @var Configuration
      */
-    private $configuration;
+    private Configuration $configuration;
 
     /**
-     * @var Ldap
+     * @var Ldap|null
      */
-    private $ldap;
+    private ?Ldap $ldap = null;
 
     /**
      * @var LoggerInterface
      */
-    private $logger;
+    private LoggerInterface $logger;
+
+    /**
+     * @var string
+     */
+    private string $username;
+
+    /**
+     * @var string
+     */
+    private string $password;
 
     /**
      * LdapClient constructor.
@@ -57,47 +65,95 @@ class LdapClient implements LdapClientInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function getUserByUsername($username)
+    public function setUsername(string $username): void
     {
-        $this->bind();
+        $this->username = $username;
+    }
 
-        $params = [
-            ':username' => $username,
-            ':usernameAttribute' => $this->configuration->getAttributeNameUsername()
-        ];
+    /**
+     * @inheritDoc
+     */
+    public function setPassword(string $password): void
+    {
+        $this->password = $password;
+    }
 
-        $query = strtr($this->configuration->getUserFilter(), $params);
-
+    /**
+     * @inheritdoc
+     * @throws LocalizedException
+     */
+    public function getBoundUser(): string
+    {
         try {
-            return $this->ldap->search($query, null, Ldap::SEARCH_SCOPE_ONE);
-        } catch (Exception $e) {
+            $this->bind();
+            return (string)$this->ldap->getBoundUser();
+        } catch (LdapException|Exception $e) {
             $this->logger->error($e->getMessage());
             throw new LocalizedException(__('Login temporarily deactivated. Check your logs for more Information.'));
         }
     }
 
     /**
-     * {@inheritdoc}
-     * @throws LdapException
+     * @param string $username
+     *
+     * @return array
+     *
+     * @throws LocalizedException
      */
-    public function bind()
+    public function getUserByUsername(string $username): array
     {
-        if ($this->ldap === null) {
-            $this->ldap = new Ldap($this->configuration->getLdapConnectionOptions());
-            $this->ldap->bind();
+        try {
+            if ($this->ldap === null) {
+                $this->bind();
+            }
+
+            if ($this->ldap->getBoundUser()) {
+                return $this->ldap->getEntry($this->ldap->getBoundUser());
+            }
+
+            throw new LocalizedException(__('Login temporary deactivated. Check your logs for more Information.'));
+
+        } catch (LdapException|Exception $e) {
+            $this->logger->error($e);
+            throw new LocalizedException(__('Login temporary deactivated. Check your logs for more Information.'));
         }
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
+     * @throws LdapException
+     * @throws LocalizedException
      */
-    public function canBind()
+    public function bind(): void
+    {
+        if (empty($this->username) || empty($this->password)) {
+            throw new LocalizedException(__('Missing username or password.'));
+        }
+
+        if ($this->ldap === null || !$this->ldap->getBoundUser()) {
+            $options = $this->configuration->getLdapConnectionOptions();
+            $params = [
+                ':username' => $this->username,
+                ':usernameAttribute' => $this->configuration->getAttributeNameUsername()
+            ];
+
+            $options['accountFilterFormat'] = strtr($this->configuration->getUserFilter(), $params);
+
+            $this->ldap = new Ldap($options);
+            $this->ldap->bind($this->username, $this->password);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function canBind(): bool
     {
         try {
             $this->bind();
-        } catch (LdapException $e) {
+        } catch (LdapException|LocalizedException $e) {
             $this->logger->error($e->getMessage());
             return false;
         }

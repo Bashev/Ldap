@@ -16,15 +16,17 @@
 namespace Webcode\Ldap\Plugin\Backend\Model\Auth\Credential;
 
 use Closure;
-use Webcode\Ldap\Api\LdapClientInterface;
-use Webcode\Ldap\Model\Ldap\PasswordValidator;
-use Webcode\Ldap\Model\Ldap\UserMapper;
+use Exception;
+use Laminas\Ldap\Exception\LdapException;
 use Magento\Backend\Model\Auth\Credential\StorageInterface;
 use Magento\Framework\Event\ManagerInterface;
 use Magento\Framework\Exception\AuthenticationException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\User\Model\User;
 use Psr\Log\LoggerInterface;
+use Webcode\Ldap\Api\LdapClientInterface;
+use Webcode\Ldap\Model\Ldap\Configuration;
+use Webcode\Ldap\Model\Ldap\UserMapper;
 
 /**
  * Class StoragePlugin
@@ -42,11 +44,6 @@ class StoragePlugin
     private $eventManager;
 
     /**
-     * @var PasswordValidator
-     */
-    private $passwordValidator;
-
-    /**
      * @var LoggerInterface
      */
     private $logger;
@@ -57,9 +54,15 @@ class StoragePlugin
     private $userMapper;
 
     /**
+     * @var Configuration
+     */
+    private Configuration $configuration;
+
+    /**
      * @var \Magento\User\Model\ResourceModel\User
      */
     private $userResource;
+
 
     /**
      * StoragePlugin constructor.
@@ -68,7 +71,7 @@ class StoragePlugin
      * @param LdapClientInterface $ldapClient
      * @param UserMapper $userMapper
      * @param ManagerInterface $eventManager
-     * @param PasswordValidator $passwordValidator
+     * @param Configuration $configuration
      * @param \Magento\User\Model\ResourceModel\User $userResource
      * @internal param User $user
      */
@@ -77,14 +80,14 @@ class StoragePlugin
         LdapClientInterface $ldapClient,
         UserMapper $userMapper,
         ManagerInterface $eventManager,
-        PasswordValidator $passwordValidator,
+        Configuration $configuration,
         \Magento\User\Model\ResourceModel\User $userResource
     ) {
         $this->ldapClient = $ldapClient;
         $this->eventManager = $eventManager;
-        $this->passwordValidator = $passwordValidator;
         $this->logger = $logger;
         $this->userMapper = $userMapper;
+        $this->configuration = $configuration;
         $this->userResource = $userResource;
     }
 
@@ -95,6 +98,7 @@ class StoragePlugin
      * @param $password
      * @return bool
      * @throws LocalizedException
+     * @throws LdapException
      */
     public function aroundAuthenticate(StorageInterface $subject, Closure $proceed, $username, $password)
     {
@@ -110,7 +114,7 @@ class StoragePlugin
         $subject->loadByUsername($username);
 
         // allow local users to login
-        if (!$subject->isEmpty() && strlen(trim($subject->getLdapDn())) === 0) {
+        if (!$subject->isEmpty() && strlen(trim((string)$subject->getLdapDn())) === 0) {
             // go the magento way and provide the ability to call other auth mechanism
             return $proceed($username, $password);
         }
@@ -122,9 +126,12 @@ class StoragePlugin
 
             $this->eventManager->dispatch('admin_user_authenticate_before', $params);
 
+            $this->ldapClient->setUsername($username);
+            $this->ldapClient->setPassword($password);
+
             // try to use local credentials if present
             if (!$this->ldapClient->canBind() && !$subject->isEmpty()) {
-                if ($this->passwordValidator->isPasswordCachedAllowed()) {
+                if ($this->configuration->getCachePassword()) {
                     return $proceed($username, $password);
                 }
 
@@ -133,26 +140,19 @@ class StoragePlugin
                 );
             }
 
-            $ldapAttributes = $this->ldapClient->getUserByUsername($username)->current();
+            if ($ldapUser = $this->ldapClient->getUserByUsername($username)) {
+                $this->userMapper->mapUser($ldapUser, $password, $subject);
+                $this->userResource->save($subject);
+                $result = true;
 
-            if (!empty($ldapAttributes)) {
-                $this->userMapper->mapUser($ldapAttributes, $password, $subject);
-                if ($this->passwordValidator->validatePassword(
-                    $password,
-                    $ldapAttributes['userpassword'][0]
-                )) {
-                    $this->userResource->save($subject);
-                    $result = true;
-                }
+                $this->validateIdentity($subject);
 
-                 $this->validateIdentity($subject);
+                $params = ['username' => $username, 'password' => $password, 'user' => $subject, 'result' => $result];
+
+                $this->eventManager->dispatch('admin_user_authenticate_after', $params);
             }
 
-            $params = ['username' => $username, 'password' => $password, 'user' => $subject, 'result' => $result];
-
-            $this->eventManager->dispatch('admin_user_authenticate_after', $params);
-
-        } catch (LocalizedException $e) {
+        } catch (LocalizedException|LdapException|Exception $e) {
             $subject->unsetData();
             throw $e;
         }

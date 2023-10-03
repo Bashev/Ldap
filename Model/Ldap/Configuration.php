@@ -17,15 +17,15 @@
  */
 namespace Webcode\Ldap\Model\Ldap;
 
-use Webcode\Ldap\Api\ConfigInterface;
 use Magento\Framework\App\DeploymentConfig;
+use Webcode\Ldap\Api\ConfigInterface;
 
 class Configuration implements ConfigInterface
 {
     /**
      * @var DeploymentConfig
      */
-    private $deploymentConfig;
+    private DeploymentConfig $deploymentConfig;
 
     /**
      * Configuration constructor.
@@ -33,17 +33,15 @@ class Configuration implements ConfigInterface
      */
     public function __construct(
         DeploymentConfig $deploymentConfig
-    )
-    {
+    ) {
         $this->deploymentConfig = $deploymentConfig;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getUserFilter()
     {
-
         return $this->deploymentConfig->get(
             ConfigInterface::CONFIG_KEY_USER_FILTER,
             ConfigInterface::DEFAULT_USER_FILTER
@@ -51,7 +49,7 @@ class Configuration implements ConfigInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getCachePassword()
     {
@@ -59,7 +57,7 @@ class Configuration implements ConfigInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getAttributeNameUsername()
     {
@@ -70,7 +68,7 @@ class Configuration implements ConfigInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getAttributeNameFirstName()
     {
@@ -81,7 +79,7 @@ class Configuration implements ConfigInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getAttributeNameLastName()
     {
@@ -92,7 +90,7 @@ class Configuration implements ConfigInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getDefaultRoleId()
     {
@@ -100,7 +98,7 @@ class Configuration implements ConfigInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getAttributeNameEmail()
     {
@@ -111,11 +109,11 @@ class Configuration implements ConfigInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getLdapConnectionOptions()
     {
-        return array(
+        return [
             'host' => $this->getHost(),
             'port' => $this->getPort(),
             'useSsl' => $this->getUseSsl(),
@@ -123,13 +121,13 @@ class Configuration implements ConfigInterface
             'password' => $this->getBindPassword(),
             'bindRequiresDn' => $this->getBindRequiresDn(),
             'baseDn' => $this->getBaseDn(),
-            'allowEmptyPassword' => $this->getAllowEmptyPassword(),
             'useStartTls' => $this->getUseStartTls(),
-        );
+            'accountFilterFormat' => $this->getUserFilter(),
+        ];
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getHost()
     {
@@ -137,7 +135,7 @@ class Configuration implements ConfigInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getPort()
     {
@@ -148,7 +146,7 @@ class Configuration implements ConfigInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getUseSsl()
     {
@@ -156,7 +154,7 @@ class Configuration implements ConfigInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getBindDn()
     {
@@ -164,7 +162,7 @@ class Configuration implements ConfigInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getBindPassword()
     {
@@ -172,7 +170,7 @@ class Configuration implements ConfigInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getBindRequiresDn()
     {
@@ -180,7 +178,7 @@ class Configuration implements ConfigInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getBaseDn()
     {
@@ -188,7 +186,7 @@ class Configuration implements ConfigInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getAllowEmptyPassword()
     {
@@ -196,7 +194,7 @@ class Configuration implements ConfigInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getUseStartTls()
     {

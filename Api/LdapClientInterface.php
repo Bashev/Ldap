@@ -21,29 +21,52 @@ use Laminas\Ldap\Collection;
 
 /**
  * Interface LdapClientInterface
- *
- * @package Magenerds\Ldap\Api
  */
 interface LdapClientInterface
 {
     /**
-     * @return Collection
+     * Set the LDAP Username.
+     *
+     * @param string $username
+     * @return void
      */
-    function bind();
+    public function setUsername(string $username): void;
+
+    /**
+     * Set LDAP Password.
+     *
+     * @param string $password
+     * @return void
+     */
+    public function setPassword(string $password): void;
+
+    /**
+     * Try to login.
+     *
+     * @return void
+     */
+    public function bind(): void;
 
     /**
      * Try to bind with the ldap server
      *
      * @return boolean true if ldap is connected otherwise false
      */
-    function canBind();
+    public function canBind(): bool;
+
+    /**
+     * Return logged username.
+     *
+     * @return string|null
+     */
+    public function getBoundUser(): ?string;
 
     /**
      * A global LDAP search routine for finding information of a user.
      *
      * @param string $username
      *
-     * @return Collection
+     * @return array
      */
-    function getUserByUsername($username);
+    public function getUserByUsername(string $username): array;
 }
